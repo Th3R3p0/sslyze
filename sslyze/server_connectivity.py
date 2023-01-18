@@ -232,7 +232,7 @@ def _detect_support_for_tls_1_3(
     )
 
     try:
-        ssl_connection.connect(should_retry_connection=False)
+        ssl_connection.connect()
         return _TlsVersionDetectionResult(
             tls_version_supported=TlsVersionEnum.TLS_1_3,
             server_requested_client_cert=False,
@@ -286,7 +286,7 @@ def _detect_support_for_tls_1_2_or_below(
 
         try:
             # Only do one attempt when testing connectivity
-            ssl_connection.connect(should_retry_connection=False)
+            ssl_connection.connect()
             return _TlsVersionDetectionResult(
                 tls_version_supported=tls_version,
                 server_requested_client_cert=False,
@@ -337,7 +337,7 @@ def _detect_client_auth_requirement_with_tls_1_3(
         should_ignore_client_auth=True,
     )
     try:
-        ssl_connection_auth.connect(should_retry_connection=False)
+        ssl_connection_auth.connect()
 
         # With TLS 1.3 we need to send some data and then read the response
         # to force a ClientCertificateRequested exception; not sure why
@@ -397,7 +397,7 @@ def _detect_client_auth_requirement_with_tls_1_2_or_below(
     ssl_connection_auth.ssl_client.set_cipher_list(cipher_list)
 
     try:
-        ssl_connection_auth.connect(should_retry_connection=False)
+        ssl_connection_auth.connect()
         client_auth_requirement = ClientAuthRequirementEnum.OPTIONAL
     except (ClientCertificateRequested, ServerRejectedTlsHandshake):
         client_auth_requirement = ClientAuthRequirementEnum.REQUIRED
@@ -432,7 +432,7 @@ def _detect_ecdh_support(
     # Set the right elliptic curve cipher suites
     enable_ecdh_cipher_suites(tls_version, ssl_connection.ssl_client)
     try:
-        ssl_connection.connect(should_retry_connection=False)
+        ssl_connection.connect()
         is_ecdh_key_exchange_supported = True
     except ClientCertificateRequested:
         is_ecdh_key_exchange_supported = True
